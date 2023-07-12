@@ -35,7 +35,7 @@ Prerequisites:
 
    On Windows, the path can be obtained by checking the available devices in Device Manager under the "Sound, video and game controllers" or "Imaging devices" sections.
 
-Once these prerequisites are met, you can run the script from your terminal with 'python script_name.py' (replace script_name.py with the name of this script).
+Once these prerequisites are met, you can run the script from your terminal with 'python shake.py'
 """
 
 import time
