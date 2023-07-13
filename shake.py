@@ -50,32 +50,43 @@ baudrate = 115200
 printer_ser = serial.Serial(printer_port, baudrate, timeout=1)
 
 # Allow some time for printer to initialize
-time.sleep(2)
+time.sleep(5)
 
 # Define amplitude
-amplitude = 1  # Distance in mm
+amplitude = 0.5  # Distance in mm
+
+# Define number of shakes
+number_of_shakes = 5
 
 # Define speed
 speed = 5000  # Maximum speed in mm/min
 
 # Start the ffmpeg recording
+# TODO: video name should be datetime, try 100fps?
 cmd = "ffmpeg -f v4l2 -video_size 1280x720 -i /dev/video0 output.mp4"
 p = subprocess.Popen(cmd, shell=True)
+
+# allow some time for camera to load
+time.sleep(2)
 
 # Set relative positioning
 printer_ser.write(b'G91\n')
 
 # Shake the bed
-# Move in positive Y direction
-printer_ser.write('G1 Y{} F{}\n'.format(amplitude, speed).encode())
-time.sleep(amplitude/speed*60)  # Wait for the movement to complete
+for _ in range(number_of_shakes):
+    # Move in positive Y direction
+    printer_ser.write('G1 Y{} F{}\n'.format(amplitude, speed).encode())
+    time.sleep(amplitude/speed*60)  # Wait for the movement to complete
 
-# Move in negative Y direction
-printer_ser.write('G1 Y-{} F{}\n'.format(amplitude, speed).encode())
-time.sleep(amplitude/speed*60)  # Wait for the movement to complete
+    # Move in negative Y direction
+    printer_ser.write('G1 Y-{} F{}\n'.format(amplitude, speed).encode())
+    time.sleep(amplitude/speed*60)  # Wait for the movement to complete
 
 # Set back to absolute positioning
 printer_ser.write(b'G90\n')
+
+# allow extra time to finish shaking
+time.sleep(3)
 
 # Stop the ffmpeg recording
 p.terminate()
