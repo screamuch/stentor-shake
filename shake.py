@@ -3,7 +3,7 @@ This script shakes a 3D printer bed for a certain distance and records a video o
 
 Prerequisites:
 
-1. Install Python: You need to have Python installed on your system. You can download Python from https://www.python.org/downloads/.
+1. Install Python: You need to have Python installed on your system. You can download Python from https://www.python.org/downloads/. However, prefered way to install Python is through Miniconda: https://docs.conda.io/en/latest/miniconda.html
 
 2. Install the required Python packages:
    You can install them via pip (Python's package manager) by running the following command in your terminal:
@@ -35,6 +35,10 @@ Prerequisites:
 
    On Windows, the path can be obtained by checking the available devices in Device Manager under the "Sound, video and game controllers" or "Imaging devices" sections.
 
+7. Setup the lightbox on the 3d printer bed, clip it on with binder clips! Place a Stentor plate underneath the camera, and using "Photo Booth", "Cheese" (or a windows analog) aim and focus the camera on the drop of water inside the plate. Glue on a paper dot, or some sort of a marker near the plate (visible to the camera) to track movement of the plate.
+
+    7.1. Try various lenses to get the best image (full frame image of the water droplet)
+
 Once these prerequisites are met, you can run the script from your terminal with 'python shake.py'
 """
 
@@ -63,6 +67,7 @@ speed = 5000  # Maximum speed in mm/min
 
 # Start the ffmpeg recording
 # TODO: video name should be datetime, try 100fps?
+# TODO: replace /dev/video0 with actual video device (for Peter it is /dev/video0)
 cmd = "ffmpeg -f v4l2 -video_size 1280x720 -i /dev/video0 output.mp4"
 p = subprocess.Popen(cmd, shell=True)
 
