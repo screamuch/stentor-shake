@@ -39,12 +39,15 @@ Prerequisites:
 
     7.1. Try various lenses to get the best image (full frame image of the water droplet)
 
+8. Check the TODO comments in the code!
+
 Once these prerequisites are met, you can run the script from your terminal with 'python shake.py'
 """
 
 import time
 import serial
 import subprocess
+import datetime
 
 # Define the port and baudrate for the printer
 printer_port = '/dev/ttyUSB0'
@@ -65,11 +68,23 @@ number_of_shakes = 5
 # Define speed
 speed = 5000  # Maximum speed in mm/min
 
+# Get current date and time for video name
+now = datetime.datetime.now()
+date_string = now.strftime("%Y-%m-%d_%H-%M-%S")
+
 # Start the ffmpeg recording
-# TODO: video name should be datetime, try 100fps?
 # TODO: replace /dev/video0 with actual video device (for Peter it is /dev/video0)
-cmd = "ffmpeg -f v4l2 -video_size 1280x720 -i /dev/video0 output.mp4"
+cmd = f"ffmpeg -f v4l2 -video_size 1280x720 -i /dev/video0 -vcodec rawvideo -pix_fmt yuv420p output_{date_string}.avi"
+
+# TODO: try 100fps!
+# cmd = f"ffmpeg -f v4l2 -framerate 100 -video_size 1280x720 -i /dev/video0 -vcodec rawvideo -pix_fmt yuv420p output_{date_string}.avi"
+
+# Old, validated command - requires VLC to watch video
+# cmd = "ffmpeg -f v4l2 -video_size 1280x720 -i /dev/video0 output.mp4"
+
+# Run ffmpeg
 p = subprocess.Popen(cmd, shell=True)
+print(f"Recording {date_string}.mp4 (or .avi)")
 
 # allow some time for camera to load
 time.sleep(2)
